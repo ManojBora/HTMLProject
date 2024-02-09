@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="departmentId">Enter Department ID:</label>
+        <input type="text" id="departmentId" name="departmentId">
+        <button onclick="getEmployeesByDepartment()">Get Employees</button>
+        <button onclick="getEmployeeById()">Get Employee by ID</button>
+        <table id="employeeTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Position</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function getEmployeesByDepartment() {
+            const departmentId = document.getElementById('departmentId').value;
+            
+            fetch(`http://localhost:8080/employees/department/${departmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const employeeTableBody = document.getElementById('employeeTableBody');
+                    employeeTableBody.innerHTML = '';
+
+                    data.forEach(employee => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${employee.id}</td>
+                            <td>${employee.name}</td>
+                            <td>${employee.email}</td>
+                            <td>${employee.position}</td>
+                            <td>${employee.salary}</td>
+                        `;
+                        employeeTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching employees by department:', error));
+        }
+
+        function getEmployeeById() {
+            const employeeId = document.getElementById('departmentId').value;
+
+            fetch(`http://localhost:8080/employees/${employeeId}`)
+                .then(response => response.json())
+                .then(employee => {
+                    const employeeTableBody = document.getElementById('employeeTableBody');
+                    employeeTableBody.innerHTML = '';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${employee.id}</td>
+                        <td>${employee.name}</td>
+                        <td>${employee.email}</td>
+                        <td>${employee.position}</td>
+                        <td>${employee.salary}</td>
+                    `;
+                    employeeTableBody.appendChild(row);
+                })
+                .catch(error => console.error('Error fetching employee by ID:', error));
+        }
+    </script>
+</body>
+</html>
